@@ -1,8 +1,9 @@
 /**
- * com.ctaf is a group of Selenium accelerators  
+ * com.ctaf is a group of Selenium accelerators
  */
 package com.ctaf.accelerators;
 
+//import com.sun.tools.javac.util.Assert;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -17,6 +18,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.FileUtils;
+/*import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
@@ -33,7 +35,8 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpParams;*/
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -46,19 +49,23 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.touch.TouchActions;
-import org.openqa.selenium.internal.Locatable;
+//import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Test;
+
 
 import com.ctaf.utilities.Reporter;
+
 //import com.desktopWeb.workflows.HelperClass;
 
 /**
- *  ActionEngine is a wrapper class of Selenium actions
+ * ActionEngine is a wrapper class of Selenium actions
  */
 @SuppressWarnings("deprecation")
 public class ActionEngine extends TestEngine {
@@ -69,17 +76,15 @@ public class ActionEngine extends TestEngine {
 	// public static boolean flag=false;
 
 	/**
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 * @return --boolean (true or false)
 	 * @throws Throwable
 	 */
 
-	
+
 	public static boolean click(By locator, String locatorName)
 			throws Throwable {
 		explicityWait(locator, locatorName);
@@ -93,28 +98,27 @@ public class ActionEngine extends TestEngine {
 			if (!flag) {
 				Reporter.failureReport("Click", "Unable to click on "
 						+ locatorName);
-				logger.info("Unable to click on "+ locatorName);
+				logger.info("Unable to click on " + locatorName);
 				return flag;
 			} else if (b && flag) {
 				Reporter.SuccessReport("Click", "Successfully click on "
 						+ locatorName);
-				logger.info("Successfully click on "+ locatorName);
+				logger.info("Successfully click on " + locatorName);
 			}
 		}
 		return flag;
 	}
-	
-	
+
+
 	/**
 	 * This method returns check existence of element
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Textbox, checkbox etc)
-	 * @return: Boolean value(True or False)
+	 * <p>
+	 * : Action to be performed on element (Get it from Object
+	 * repository)
+	 *
+	 * @param locatorName : Meaningful name to the element (Ex:Textbox, checkbox etc)
 	 * @throws NoSuchElementException
+	 * @return: Boolean value(True or False)
 	 */
 	public static boolean isElementPresent(By by, String locatorName)
 			throws Throwable {
@@ -123,15 +127,17 @@ public class ActionEngine extends TestEngine {
 			driver.findElement(by);
 			flag = true;
 			return true;
+
 		} catch (Exception e) {
-			Assert.assertTrue(flag,locatorName+" Element is not present on the page ");
+
+			Assert.assertTrue(flag, locatorName + " Element is not present on the page ");
 			e.printStackTrace();
 			return false;
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("Check IsElementPresent ", locatorName
 						+ " Element is not present on the page");
-				Assert.assertTrue(flag,"Unable find the element "+ locatorName);
+				Assert.assertTrue(flag, "Unable find the element " + locatorName);
 			} else if (b && flag) {
 				Reporter.SuccessReport("IsElementPresent ",
 						"Able to locate element " + locatorName);
@@ -139,43 +145,42 @@ public class ActionEngine extends TestEngine {
 
 		}
 	}
-    public static boolean isElementDisplayedTemp(WebElement we)
-    throws Throwable {
-        boolean flag = false;
-        try {
-            driver.manage().timeouts().implicitlyWait(50, TimeUnit.MILLISECONDS);
-            flag  = we.isDisplayed();
-            if(flag){
-                System.out.println("found the element ");
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return flag;
-    }
-    
-    public static boolean verifyElementDisplayed(By by, String Description) throws Throwable{
-        
-        if(isElementDisplayed(by, Description))
-        {
-            Reporter.SuccessReport(Description, "Successful");
-            return true;
-        }else
-        {
-            Reporter.failureReport(Description, "Failed");
-            return false;
-        }
-        
-    }
-    
-    
+
+	public static boolean isElementDisplayedTemp(WebElement we)
+			throws Throwable {
+		boolean flag = false;
+		try {
+			driver.manage().timeouts().implicitlyWait(50, TimeUnit.MILLISECONDS);
+			flag = we.isDisplayed();
+			if (flag) {
+				System.out.println("found the element ");
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return flag;
+	}
+
+	public static boolean verifyElementDisplayed(By by, String Description) throws Throwable {
+
+		if (isElementDisplayed(by, Description, 20)) {
+			Reporter.SuccessReport(Description, "Successful");
+			return true;
+		} else {
+			Reporter.failureReport(Description, "Failed");
+			return false;
+		}
+
+	}
+
+
 	public static boolean scrollToText(final String text)
 			throws Throwable {
 		boolean flag = false;
 		try {
-			if(browser.toLowerCase().contains("iphone")){
-				//Iosdriver.sscrollTo(text);
-			}else if(browser.toLowerCase().contains("android")){
+			if (browser.toLowerCase().contains("iphone")) {
+				// Iosdriver.sscrollTo(text);
+			} else if (browser.toLowerCase().contains("android")) {
 				//AndroidDriver2.scrollTo(text);
 			}
 			flag = true;
@@ -185,87 +190,86 @@ public class ActionEngine extends TestEngine {
 			return false;
 		}
 	}
+
 	public static boolean scrollToElement(By locator)
-    throws Throwable {
-        boolean flag = false;
-        WebElement we1 = null;
-        try {
-            if(!(isElementDisplayedTemp(locator))){
-                try
-                {
-                    for(int i=1;(!(isElementDisplayedTemp(locator)))|(i<300);i=i+1){
-                        
-                        try{
-                            List<WebElement> wes = driver.findElements(By.xpath("//*"));
-                            System.out.println("i val "+i+" "+(wes.size()-1));
-                            if(!(isElementDisplayedTemp(we1))){
-                                Point pt = wes.get(1).getLocation();
-                                Point pt2 = wes.get(2).getLocation();
-                                if(browser.toLowerCase().contains("android")){
-                                    AndroidDriver2.swipe(pt.getX(), pt.getY(), pt2.getX(),
-                                                         pt2.getY(), 8000);
-                                }else{
-                                    Iosdriver.swipe(pt.getX(), pt.getY(), pt.getX()+i, pt.getY()+i, 8000);
-                                }
-                            }else{
-                                System.out.println("reached end of screen , unable to find elemenet");
-                                break;
-                            }
-                            we1 = wes.get((wes.size())-1);
-                        }catch(Exception e1){
-                            e1.printStackTrace();
-                        }
-                        //}//
-                        System.out.println("scrolling..");
-                        if((isElementDisplayedTemp(locator))){
-                            Thread.sleep(1000);
-                            flag = true;
-                            break;
-                        }
-                    }
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            return flag;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } 
-    }
-	
-	public static boolean waitForElementHasSomeText(final By by, String locator)
+			throws Throwable {
+		boolean flag = false;
+		WebElement we1 = null;
+		try {
+			if (!(isElementDisplayedTemp(locator))) {
+				try {
+					for (int i = 1; (!(isElementDisplayedTemp(locator))) | (i < 300); i = i + 1) {
+
+						try {
+							List<WebElement> wes = driver.findElements(By.xpath("//*"));
+							System.out.println("i val " + i + " " + (wes.size() - 1));
+							if (!(isElementDisplayedTemp(we1))) {
+								Point pt = wes.get(1).getLocation();
+								Point pt2 = wes.get(2).getLocation();
+								if (browser.toLowerCase().contains("android")) {
+									AndroidDriver2.swipe(pt.getX(), pt.getY(), pt2.getX(),
+											pt2.getY(), 8000);
+								} else {
+									Iosdriver.swipe(pt.getX(), pt.getY(), pt.getX() + i, pt.getY() + i, 8000);
+								}
+							} else {
+								System.out.println("reached end of screen , unable to find elemenet");
+								break;
+							}
+							we1 = wes.get((wes.size()) - 1);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						//}//
+						System.out.println("scrolling..");
+						if ((isElementDisplayedTemp(locator))) {
+							Thread.sleep(1000);
+							flag = true;
+							break;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return flag;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean waitForElementHasSomeText(final By by, String locator, long waitTime)
 			throws Throwable {
 		boolean flag = false;
 		try {
-			wait = new WebDriverWait(driver, 180);
+			wait = new WebDriverWait(driver, waitTime);
 			flag = wait.until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver arg0) {
-					return  driver.findElement(by).getText().length() != 0;
+					return driver.findElement(by).getText().length() != 0;
 				}
 			});
 		} catch (Exception e) {
 			Assert.assertTrue(flag,
-					"waitForElementHasSomeText : Falied to locate element"+locator
-					+" with some text");
+					"waitForElementHasSomeText : Falied to locate element" + locator
+							+ " with some text");
 			e.printStackTrace();
 			return false;
-		}finally {
-		if (!flag) {
-			Reporter.failureReport("waitForElementHasSomeText", "Failed to find element "+locator
-					+" with some text");
-		} else if (flag) {
-			Reporter.SuccessReport("waitForElementHasSomeText", " found element "+locator
-					+" with some text");
-			return flag;
-		}
-	
+		} finally {
+			if (!flag) {
+				Reporter.failureReport("waitForElementHasSomeText", "Failed to find element " + locator
+						+ " with some text");
+			} else if (flag) {
+				Reporter.SuccessReport("waitForElementHasSomeText", " found element " + locator
+						+ " with some text");
+				return flag;
+			}
+
 		}
 		return flag;
 	}
-	
+
 	public static boolean verifyElementAbsent(By by, String locatorName)
 			throws Throwable {
 		boolean flag = true;
@@ -281,7 +285,7 @@ public class ActionEngine extends TestEngine {
 			if (!flag) {
 				Reporter.failureReport("verifyElementAbsent", locatorName
 						+ "Failed to Assert Element is absent");
-				Assert.assertTrue(flag,"Failed to Assert Element is absent"+ locatorName);
+				Assert.assertTrue(flag, "Failed to Assert Element is absent" + locatorName);
 			} else if (b && flag) {
 				Reporter.SuccessReport("verifyElementAbsent ",
 						"Able to assert element is absent " + locatorName);
@@ -290,8 +294,8 @@ public class ActionEngine extends TestEngine {
 
 		}
 	}
-	
-	
+
+
 	public static boolean isPopUpElementPresent(By by, String locatorName)
 			throws Throwable {
 		boolean flag = false;
@@ -308,8 +312,8 @@ public class ActionEngine extends TestEngine {
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("check IsElementPresent", locatorName
-				+ " Element is not present on the page");
-				Assert.assertTrue(flag,"Unable find the pop-up "+ locatorName);
+						+ " Element is not present on the page");
+				Assert.assertTrue(flag, "Unable find the pop-up " + locatorName);
 			} else if (b && flag) {
 				Reporter.SuccessReport("IsElementPresent ",
 						"Able to locate element " + locatorName);
@@ -320,41 +324,34 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method used type value in to text box or text area
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param testdata
-	 *            : Value wish to type in text box / text area
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Textbox,Text Area etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param testdata    : Value wish to type in text box / text area
+	 * @param locatorName : Meaningful name to the element (Ex:Textbox,Text Area etc..)
 	 * @throws NoSuchElementException
 	 */
-	public static boolean type(By locator, String testdata, String locatorName)
-			throws Throwable {
+	public static boolean type(By locator, String testdata, String locatorName) throws Throwable {
 		explicityWait(locator, locatorName);
 		boolean flag = false;
-		try { 
+		try {
 			WebElement we = driver.findElement(locator);
 			we.clear();
 			we.sendKeys(testdata);
 			flag = true;
 		} catch (Exception e) {
-			e.printStackTrace();   
+			e.printStackTrace();
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("Type ",
 						"Data typing action is not perform on " + locatorName
 								+ " with data is " + testdata);
-				logger.info("Unable to type  "+ testdata+" in "+locatorName);
+				logger.info("Unable to type  " + testdata + " in " + locatorName);
 			} else if (b && flag) {
 				Reporter.SuccessReport("Type ",
 						"Data typing action is performed on " + locatorName
 								+ " with data is " + testdata);
-				logger.info("Type  "+ testdata+" in "+locatorName);
+				logger.info("Type  " + testdata + " in " + locatorName);
 			}
 		}
 		return flag;
@@ -363,14 +360,10 @@ public class ActionEngine extends TestEngine {
 	/**
 	 * Moves the mouse to the middle of the element. The element is scrolled
 	 * into view and its location is calculated using getBoundingClientRect.
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:link,menus etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:link,menus etc..)
 	 */
 	public static boolean mouseover(By locator, String locatorName)
 			throws Throwable {
@@ -381,13 +374,13 @@ public class ActionEngine extends TestEngine {
 			flag = true;
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag,"MouseOver action is not perform on " + locatorName);
+			Assert.assertTrue(flag, "MouseOver action is not perform on " + locatorName);
 			return false;
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("MouseOver",
 						"MouseOver action is not perform on " + locatorName);
-				Assert.assertTrue(flag,"Unable find the element "+ locatorName);
+				Assert.assertTrue(flag, "Unable find the element " + locatorName);
 			} else if (b && flag) {
 
 				Reporter.SuccessReport("MouseOver ",
@@ -399,16 +392,10 @@ public class ActionEngine extends TestEngine {
 	/**
 	 * A convenience method that performs click-and-hold at the location of the
 	 * source element, moves by a given offset, then releases the mouse.
-	 * 
-	 * @param source
-	 *            : Element to emulate button down at.
-	 * 
-	 * @param xOffset
-	 *            : Horizontal move offset.
-	 * 
-	 * @param yOffset
-	 *            : Vertical move offset.
-	 * 
+	 *
+	 * @param source : Element to emulate button down at.
+	 * @param :      Horizontal move offset.
+	 * @param :      Vertical move offset.
 	 */
 	public static boolean draggable(By source, int x, int y, String locatorName)
 			throws Throwable {
@@ -441,16 +428,10 @@ public class ActionEngine extends TestEngine {
 	 * A convenience method that performs click-and-hold at the location of the
 	 * source element, moves to the location of the target element, then
 	 * releases the mouse.
-	 * 
-	 * @param source
-	 *            : Element to emulate button down at.
-	 * 
-	 * @param target
-	 *            : Element to move to and release the mouse at.
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Button,image etc..)
-	 * 
+	 *
+	 * @param source      : Element to emulate button down at.
+	 * @param target      : Element to move to and release the mouse at.
+	 * @param locatorName : Meaningful name to the element (Ex:Button,image etc..)
 	 */
 	public static boolean draganddrop(By source, By target, String locatorName)
 			throws Throwable {
@@ -479,14 +460,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * To slide an object to some distance
-	 * 
-	 * @param slider
-	 *            : Action to be performed on element
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
-	 * 
+	 *
+	 * @param slider      : Action to be performed on element
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 */
 	public static boolean slider(By slider, int x, int y, String locatorName)
 			throws Throwable {
@@ -517,15 +494,11 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * To right click on an element
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
-	 * 
+	 *
+	 * @param by          : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 * @throws Throwable
 	 */
 
@@ -557,11 +530,9 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Wait for an element
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
+	 *
+	 * @param locator : Action to be performed on element (Get it from Object
+	 *                repository)
 	 */
 
 	public static boolean waitForTitlePresent(By locator) throws Throwable {
@@ -595,32 +566,30 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Wait for an ElementPresent
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
+	 *
+	 * @param locator : Action to be performed on element (Get it from Object
+	 *                repository)
 	 * @return Whether or not the element is displayed
 	 */
 	public static boolean waitForElementPresent(By by, String locator)
 			throws Throwable {
 		boolean flag = false;
 		try {
-				wait = new WebDriverWait(driver, 800);
-				WebElement  element =  null;
-					element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
-				    boolean enabled = element.getSize().getHeight()>0;
-				    if(enabled){ 
-				    	flag = true;
-				    }else {
-				    	driver.wait(50);
-					}
+			wait = new WebDriverWait(driver, 800);
+			WebElement element = null;
+			element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
+			boolean enabled = element.getSize().getHeight() > 0;
+			if (enabled) {
+				flag = true;
+			} else {
+				driver.wait(50);
+			}
 		} catch (Exception e) {
-			
-			Assert.assertTrue(flag,"waitForElementPresent : Falied to locate element "+locator);
+
+			Assert.assertTrue(flag, "waitForElementPresent : Falied to locate element " + locator);
 
 			e.printStackTrace();
-			
+
 			return false;
 		} finally {
 			if (!flag) {
@@ -638,21 +607,16 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method Click on element and wait for an element
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param waitElement
-	 *            : Element name wish to wait for that (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param waitElement : Element name wish to wait for that (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 */
 	public static boolean clickAndWaitForElementPresent(By locator,
-			By waitElement, String locatorName) throws Throwable {
+														By waitElement, String locatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			click(locator, locatorName);
@@ -674,21 +638,15 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Select a value from Dropdown using send keys
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param value
-	 *            : Value wish type in dropdown list
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Year Dropdown, items
-	 *            Listbox etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param value       : Value wish type in dropdown list
+	 * @param locatorName : Meaningful name to the element (Ex:Year Dropdown, items
+	 *                    Listbox etc..)
 	 */
 	public static boolean selectBySendkeys(By locator, String value,
-			String locatorName) throws Throwable {
+										   String locatorName) throws Throwable {
 
 		boolean flag = false;
 		try {
@@ -713,21 +671,15 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * select value from DropDown by using selectByIndex
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param index
-	 *            : Index of value wish to select from dropdown list.
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Year Dropdown, items
-	 *            Listbox etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param index       : Index of value wish to select from dropdown list.
+	 * @param locatorName : Meaningful name to the element (Ex:Year Dropdown, items
+	 *                    Listbox etc..)
 	 */
 	public static boolean selectByIndex(By locator, int index,
-			String locatorName) throws Throwable {
+										String locatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			Select s = new Select(driver.findElement(locator));
@@ -735,7 +687,7 @@ public class ActionEngine extends TestEngine {
 			flag = true;
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag,"Option at index " + index
+			Assert.assertTrue(flag, "Option at index " + index
 					+ " is Not Selected from the DropDown" + locatorName);
 			e.printStackTrace();
 			return false;
@@ -753,21 +705,16 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * select value from DD by using value
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param value
-	 *            : Value wish to select from dropdown list.
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Year Dropdown, items
-	 *            Listbox etc..)
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param value       : Value wish to select from dropdown list.
+	 * @param locatorName : Meaningful name to the element (Ex:Year Dropdown, items
+	 *                    Listbox etc..)
 	 */
 
 	public static boolean selectByValue(By locator, String value,
-			String locatorName) throws Throwable {
+										String locatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			Select s = new Select(driver.findElement(locator));
@@ -775,7 +722,7 @@ public class ActionEngine extends TestEngine {
 			flag = true;
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag,"Option with value attribute " + value
+			Assert.assertTrue(flag, "Option with value attribute " + value
 					+ " is Not Selected from the DropDown "
 					+ locatorName);
 			e.printStackTrace();
@@ -797,15 +744,15 @@ public class ActionEngine extends TestEngine {
 	}
 
 	public static boolean selectByOptionText(By locator, String value,
-			String locatorName) throws Throwable {
+											 String locatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			WebElement ListBox = driver.findElement(locator);
 			List<WebElement> options = ListBox.findElements(By.tagName("option"));
-			for(WebElement option : options){
+			for (WebElement option : options) {
 				String opt = option.getText().trim();
 				//System.out.println("optionsM  "+opt);
-				if(opt.equalsIgnoreCase(value.trim())){
+				if (opt.equalsIgnoreCase(value.trim())) {
 					flag = true;
 					option.click();
 					break;
@@ -813,7 +760,7 @@ public class ActionEngine extends TestEngine {
 			}
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag,"Option with value attribute " + value
+			Assert.assertTrue(flag, "Option with value attribute " + value
 					+ " is Not Selected from the DropDown "
 					+ locatorName);
 			e.printStackTrace();
@@ -833,27 +780,21 @@ public class ActionEngine extends TestEngine {
 			}
 		}
 	}
-	
-	
-	
+
+
 	/**
 	 * select value from DropDown by using selectByVisibleText
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param visibletext
-	 *            : VisibleText wish to select from dropdown list.
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Year Dropdown, items
-	 *            Listbox etc..)
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param visibletext : VisibleText wish to select from dropdown list.
+	 * @param locatorName : Meaningful name to the element (Ex:Year Dropdown, items
+	 *                    Listbox etc..)
 	 */
 
 	public static boolean selectByVisibleText(By locator, String visibletext,
-			String locatorName) throws Throwable {
-		logger.info("Select "+ visibletext +" from "+locatorName);
+											  String locatorName) throws Throwable {
+		logger.info("Select " + visibletext + " from " + locatorName);
 		explicityWait(locator, locatorName);
 		boolean flag = false;
 		try {
@@ -878,15 +819,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * SWITCH TO WINDOW BY USING TITLE
-	 * 
-	 * @param windowTitle
-	 *            : Title of window wish to switch
-	 * 
-	 * @param count
-	 *            : Selenium launched Window id (integer no)
-	 * 
+	 *
+	 * @param windowTitle : Title of window wish to switch
+	 * @param count       : Selenium launched Window id (integer no)
 	 * @return: Boolean value(true or false)
-	 * 
 	 */
 	//
 	public static boolean switchWindowByTitle(String windowTitle, int count)
@@ -914,13 +850,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Function To get column count and print data in Columns
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
+	 *
+	 * @param locator : Action to be performed on element (Get it from Object
+	 *                repository)
 	 * @return: Returns no of columns.
-	 * 
 	 */
 	public static int getColumncount(By locator) throws Exception {
 
@@ -938,11 +871,9 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Function To get row count and print data in rows
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
+	 *
+	 * @param locator : Action to be performed on element (Get it from Object
+	 *                repository)
 	 * @return: returns no of rows.
 	 */
 	public static int getRowCount(By locator) throws Exception {
@@ -955,9 +886,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Verify alert present or not
-	 * 
+	 *
 	 * @return: Boolean (True: If alert preset, False: If no alert)
-	 * 
 	 */
 	public static boolean Alert() throws Throwable {
 		boolean flag = false;
@@ -990,11 +920,9 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * To launch URL
-	 * 
-	 * @param url
-	 *            : url value want to launch
+	 *
+	 * @param url : url value want to launch
 	 * @throws Throwable
-	 * 
 	 */
 	public static boolean launchUrl(String url) throws Throwable {
 		boolean flag = false;
@@ -1004,7 +932,7 @@ public class ActionEngine extends TestEngine {
 			flag = true;
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag,"Failed to launch "
+			Assert.assertTrue(flag, "Failed to launch "
 					+ url);
 			e.printStackTrace();
 			return false;
@@ -1022,16 +950,11 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method verify check box is checked or not
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:sign in Checkbox etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:sign in Checkbox etc..)
 	 * @return: boolean value(True: if it is checked, False: if not checked)
-	 * 
 	 */
 	public static boolean isChecked(By locator, String locatorName)
 			throws Throwable {
@@ -1062,18 +985,13 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Element is enable or not
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, UserName
-	 *            Textbox etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, UserName
+	 *                    Textbox etc..)
 	 * @return: boolean value (True: if the element is enabled, false: if it not
-	 *          enabled).
-	 * 
+	 * enabled).
 	 */
 
 	public static boolean isEnabled(By locator, String locatorName)
@@ -1104,18 +1022,13 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Element visible or not
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 * @return: boolean value(True: if the element is visible, false: If element
-	 *          not visible)
-	 * 
+	 * not visible)
 	 */
 
 	public static boolean isVisible(By locator, String locatorName)
@@ -1130,7 +1043,7 @@ public class ActionEngine extends TestEngine {
 		} catch (Exception e) {
 			flag = false;
 			value = false;
-			Assert.assertTrue(flag,locatorName
+			Assert.assertTrue(flag, locatorName
 					+ " Element is Not Visible");
 
 		} finally {
@@ -1148,25 +1061,18 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Get the CSS value of an element
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, label color
-	 *            etc..)
-	 * 
-	 * @param cssattribute
-	 *            : CSS attribute name wish to verify the value (id, name,
-	 *            etc..)
-	 * 
+	 *
+	 * @param locator      : Action to be performed on element (Get it from Object
+	 *                     repository)
+	 * @param locatorName  : Meaningful name to the element (Ex:Login Button, label color
+	 *                     etc..)
+	 * @param cssattribute : CSS attribute name wish to verify the value (id, name,
+	 *                     etc..)
 	 * @return: String CSS value of the element
-	 * 
 	 */
 
 	public static String getCssValue(By locator, String cssattribute,
-			String locatorName) throws Throwable {
+									 String locatorName) throws Throwable {
 		String value = "";
 		boolean flag = false;
 		try {
@@ -1191,25 +1097,17 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Check the expected value is available or not
-	 * 
-	 * @param expvalue
-	 *            : Expected value of attribute
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param attribute
-	 *            : Attribute name of element wish to assert
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:link text, label text
-	 *            etc..)
-	 * 
+	 *
+	 * @param expvalue    : Expected value of attribute
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param attribute   : Attribute name of element wish to assert
+	 * @param locatorName : Meaningful name to the element (Ex:link text, label text
+	 *                    etc..)
 	 */
 	public static boolean assertValue(String expvalue, By locator,
-			String attribute, String locatorName) throws Throwable {
-		
+									  String attribute, String locatorName) throws Throwable {
+
 		boolean flag = false;
 		try {
 			Assert.assertEquals(expvalue,
@@ -1221,12 +1119,12 @@ public class ActionEngine extends TestEngine {
 			if (!flag) {
 				Reporter.failureReport("AssertValue ", locatorName
 						+ " not present in the page");
-				logger.info("Assert "+attribute+" of "+ locatorName + ". Not Equal");
+				logger.info("Assert " + attribute + " of " + locatorName + ". Not Equal");
 				return false;
 			} else if (b & flag) {
 				Reporter.SuccessReport("AssertValue ", locatorName
 						+ " is present in the page ");
-				logger.info("Assert "+attribute+" of "+ locatorName + ". Equal");
+				logger.info("Assert " + attribute + " of " + locatorName + ". Equal");
 			}
 		}
 		return flag;
@@ -1234,10 +1132,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Check the text is presnt or not
-	 * 
-	 * @param text
-	 *            : Text wish to assert on the page.
-	 * 
+	 *
+	 * @param text : Text wish to assert on the page.
 	 */
 	public static boolean assertTextPresent(String text) throws Throwable {
 		boolean flag = false;
@@ -1261,19 +1157,15 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Assert element present or not
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:Login Button, SignIn Link
-	 *            etc..)
-	 * 
+	 *
+	 * @param by          : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:Login Button, SignIn Link
+	 *                    etc..)
 	 */
 	public static boolean assertElementPresent(By by, String locatorName)
 			throws Throwable {
-		
+
 		explicityWait(by, locatorName);
 
 		boolean flag = false;
@@ -1288,12 +1180,12 @@ public class ActionEngine extends TestEngine {
 			if (!flag) {
 				Reporter.failureReport("AssertElementPresent ", locatorName
 						+ " is not present in the page ");
-				logger.info("Element "+by+" is not present");
+				logger.info("Element " + by + " is not present");
 				return true;
 			} else if (b & flag) {
 				Reporter.SuccessReport("AssertElementPresent ", locatorName
 						+ " is present in the page ");
-				logger.info("Element "+by+" is present");
+				logger.info("Element " + by + " is present");
 			}
 		}
 		return flag;
@@ -1302,14 +1194,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Assert text on element
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param text
-	 *            : expected text to assert on the element
-	 * 
+	 *
+	 * @param by   : Action to be performed on element (Get it from Object
+	 *             repository)
+	 * @param text : expected text to assert on the element
 	 */
 
 	public static boolean assertText(By by, String text) throws Throwable {
@@ -1325,13 +1213,13 @@ public class ActionEngine extends TestEngine {
 			if (!flag) {
 				Reporter.failureReport("AssertText ", text
 						+ " is not present in the element ");
-				logger.info("Assert text of "+ by+" .Expected text "+text+" is Not present");
+				logger.info("Assert text of " + by + " .Expected text " + text + " is Not present");
 				return false;
 
 			} else if (b && flag) {
 				Reporter.SuccessReport("AssertText ", text
 						+ " is  present in the element ");
-				logger.info("Assert text of "+ by+" .Expected text "+text+" is present");
+				logger.info("Assert text of " + by + " .Expected text " + text + " is present");
 			}
 		}
 
@@ -1339,18 +1227,12 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Assert text on element
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param text
-	 *            : expected text to assert on the element
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:link text, label text
-	 *            etc..)
-	 * 
+	 *
+	 * @param by          : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param text        : expected text to assert on the element
+	 * @param locatorName : Meaningful name to the element (Ex:link text, label text
+	 *                    etc..)
 	 */
 	public static boolean verifyText(By by, String text, String locatorName)
 			throws Throwable {
@@ -1378,9 +1260,8 @@ public class ActionEngine extends TestEngine {
 	}
 
 	/**
-	 * @return: return title of current page.
-	 * 
 	 * @throws Throwable
+	 * @return: return title of current page.
 	 */
 
 	public static String getTitle() throws Throwable {
@@ -1394,10 +1275,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Assert Title of the page.
-	 * 
-	 * @param title
-	 *            : Expected title of the page.
-	 * 
+	 *
+	 * @param title : Expected title of the page.
 	 */
 	public static boolean assertTitle(String title) throws Throwable {
 		boolean flag = false;
@@ -1431,10 +1310,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Verify Title of the page.
-	 * 
-	 * @param title
-	 *            : Expected title of the page.
-	 * 
+	 *
+	 * @param title : Expected title of the page.
 	 */
 	public static boolean verifyTitle(String title) throws Throwable {
 
@@ -1446,9 +1323,7 @@ public class ActionEngine extends TestEngine {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}
-
-		finally {
+		} finally {
 			if (!flag) {
 				Reporter.failureReport("VerifyTitle ",
 						"Page title is not matched with " + title);
@@ -1463,10 +1338,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Verify text present or not
-	 * 
-	 * @param text
-	 *            : Text wish to verify on the current page.
-	 * 
+	 *
+	 * @param text : Text wish to verify on the current page.
 	 */
 	public static boolean verifyTextPresent(String text) throws Throwable {
 		boolean flag = false;
@@ -1487,40 +1360,33 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Get the value of a the given attribute of the element.
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param attribute
-	 *            : Attribute name wish to assert the value.
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:label, SignIn Link etc..)
-	 * 
+	 *
+	 * @param by          : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param attribute   : Attribute name wish to assert the value.
+	 * @param locatorName : Meaningful name to the element (Ex:label, SignIn Link etc..)
 	 * @return: String attribute value
-	 * 
 	 */
 
 	public static String getAttribute(By by, String attribute,
-			String locatorName) throws Throwable {
+									  String locatorName) throws Throwable {
 		boolean flag = false;
 		String value = "";
-		try{
+		try {
 			if (isElementPresent(by, locatorName)) {
 				value = driver.findElement(by).getAttribute(attribute);
-				flag=true;
+				flag = true;
 			}
-		}catch (Exception e) {
-			Assert.assertTrue(flag," Unable to get Attribute "+ attribute +" from "
+		} catch (Exception e) {
+			Assert.assertTrue(flag, " Unable to get Attribute " + attribute + " from "
 					+ locatorName);
 			e.printStackTrace();
 		} finally {
 			if (!flag) {
-				Reporter.failureReport("GetAttribute ", " Unable to get Attribute "+ attribute +" from "
+				Reporter.failureReport("GetAttribute ", " Unable to get Attribute " + attribute + " from "
 						+ locatorName);
 			} else if (b && flag) {
-				Reporter.SuccessReport("GetAttribute ", " Able to get Attribute "+ attribute +" from "
+				Reporter.SuccessReport("GetAttribute ", " Able to get Attribute " + attribute + " from "
 						+ locatorName);
 			}
 		}
@@ -1529,34 +1395,32 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Text present or not
-	 * 
-	 * @param text
-	 *            : Text wish to verify on current page
-	 * 
+	 *
+	 * @param text : Text wish to verify on current page
 	 * @return: boolean value(true: if Text present, false: if text not present)
 	 */
 
 	public static boolean isTextPresent(String text) throws Throwable {
 
 		boolean value = false;
-		if(driver.getPageSource().toLowerCase().contains(text.toLowerCase())){
+		if (driver.getPageSource().toLowerCase().contains(text.toLowerCase())) {
 			value = true;
 			flag = true;
-		}else{
-		System.out.println("is text "+text+" present  " + value);
-		flag = false;
+		} else {
+			System.out.println("is text " + text + " present  " + value);
+			flag = false;
 		}
 		if (!value) {
 			Reporter.failureReport("IsTextPresent ", text
 					+ " is  not presented in the page ");
-			Assert.assertTrue(value,text
+			Assert.assertTrue(value, text
 					+ " is  not presented in the page ");
 			return false;
-			
+
 		} else if (b && flag) {
 			Reporter.SuccessReport("IsTextPresent ", "'" + text + "'"
 					+ " is presented in the page ");
-			
+
 			return true;
 		}
 		return value;
@@ -1564,17 +1428,12 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * The innerText of this element.
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:label text, SignIn Link
-	 *            etc..)
-	 * 
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:label text, SignIn Link
+	 *                    etc..)
 	 * @return: String return text on element
-	 * 
 	 */
 
 	public static String getText(By locator, String locatorName)
@@ -1587,7 +1446,7 @@ public class ActionEngine extends TestEngine {
 				flag = true;
 			}
 		} catch (Exception e) {
-			Assert.assertTrue(flag," Unable to get Text from "
+			Assert.assertTrue(flag, " Unable to get Text from "
 					+ locatorName);
 			e.printStackTrace();
 		} finally {
@@ -1613,7 +1472,7 @@ public class ActionEngine extends TestEngine {
 				flag = true;
 			}
 		} catch (Exception e) {
-			Assert.assertTrue(flag," Unable to get Text from "
+			Assert.assertTrue(flag, " Unable to get Text from "
 					+ locatorName);
 			e.printStackTrace();
 		} finally {
@@ -1646,11 +1505,9 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * Capture Screenshot
-	 * 
-	 * @param fileName
-	 *            : FileName screenshot save in local directory
-	 * @throws Throwable 
-	 * 
+	 *
+	 * @param fileName : FileName screenshot save in local directory
+	 * @throws Throwable
 	 */
 	public static void screenShot(String fileName) throws Throwable {
 		File scrFile = ((TakesScreenshot) driver)
@@ -1659,49 +1516,47 @@ public class ActionEngine extends TestEngine {
 			// Now you can do whatever you need to do with it, for example copy
 			// somewhere
 			FileUtils.copyFile(scrFile, new File(fileName));
-			flag=true;
+			flag = true;
 		} catch (IOException e) {
 			//Assert.assertTrue(flag,"Unable to take Screenshot");
 			e.printStackTrace();
-		}finally {
+		} finally {
 			if (!flag) {
 				//Reporter.failureReport("screenShot ", " Unable to get screenShot ");
-				logger.info( " Unable to get TscreenShot");
+				logger.info(" Unable to get TscreenShot");
 				System.out.println(" Unable to get TscreenShot");
 			} else if (b && flag) {
 				//Reporter.SuccessReport("screenShot ", " Able to get TscreenShot");
-				logger.info( " Able to get TscreenShot");
+				logger.info(" Able to get TscreenShot");
 				System.out.println(" Able to get TscreenShot");
 			}
 		}
 	}
-	
+
 	public static void fullScreenShot(String fileName) throws Exception {
-		 
-		   Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		   Rectangle screenRectangle = new Rectangle(screenSize);
-		   Robot robot = new Robot();
-		   BufferedImage image = robot.createScreenCapture(screenRectangle);
-		   ImageIO.write(image, "jpeg", new File(fileName));
-		 
-		}
-	public static boolean isScroolPresent(){
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenRectangle = new Rectangle(screenSize);
+		Robot robot = new Robot();
+		BufferedImage image = robot.createScreenCapture(screenRectangle);
+		ImageIO.write(image, "jpeg", new File(fileName));
+
+	}
+
+	public static boolean isScroolPresent() {
 		boolean result = false;
-		result = ((JavascriptExecutor)driver).
+		result = ((JavascriptExecutor) driver).
 				executeScript("return document.documentElement.scrollHeight>document.documentElement.clientHeight;") != null;
-	return result;
+		return result;
 	}
 
 	/**
 	 * Click on the Link
-	 * 
-	 * @param locator
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:SignIn Link, menu's
-	 *            etc..)
+	 *
+	 * @param locator     : Action to be performed on element (Get it from Object
+	 *                    repository)
+	 * @param locatorName : Meaningful name to the element (Ex:SignIn Link, menu's
+	 *                    etc..)
 	 */
 
 	public static boolean mouseHoverByJavaScript(By locator, String locatorName)
@@ -1712,13 +1567,11 @@ public class ActionEngine extends TestEngine {
 			String javaScript = "var evObj = document.createEvent('MouseEvents');"
 					+ "evObj.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);"
 					+ "arguments[0].dispatchEvent(evObj);";
-			JavascriptExecutor js = driver;
+			JavascriptExecutor js = (JavascriptExecutor) driver;
 			js.executeScript(javaScript, mo);
 			flag = true;
 			return true;
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 
 			return false;
 		} finally {
@@ -1731,7 +1584,7 @@ public class ActionEngine extends TestEngine {
 			}
 		}
 	}
-	
+
 	public static boolean mouseHoverByJavaScript(WebElement we)
 			throws Throwable {
 		//boolean flag = false;
@@ -1740,12 +1593,11 @@ public class ActionEngine extends TestEngine {
 			String javaScript = "var evObj = document.createEvent('MouseEvents');"
 					+ "evObj.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);"
 					+ "arguments[0].dispatchEvent(evObj);";
-			JavascriptExecutor js = driver;
+			JavascriptExecutor js = (JavascriptExecutor) driver;
 			js.executeScript(javaScript, mo);
 			flag = true;
 			return true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			return false;
 		} /*finally {
 			if (!flag) {
@@ -1763,12 +1615,11 @@ public class ActionEngine extends TestEngine {
 		boolean flag = false;
 		try {
 			WebElement element = driver.findElement(locator);
-			JavascriptExecutor executor = driver;
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
 			executor.executeScript("arguments[0].click();", element);
 			// driver.executeAsyncScript("arguments[0].click();", element);
 			flag = true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 
 		} finally {
 			if (!flag) {
@@ -1779,7 +1630,7 @@ public class ActionEngine extends TestEngine {
 			} else if (b && flag) {
 				Reporter.SuccessReport("MouseClick ",
 						" MouserClick Action is Done on " + locatorName);
-				
+
 				return flag;
 			}
 		}
@@ -1788,10 +1639,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method switch the focus to selected frame using frame index
-	 * 
-	 * @param index
-	 *            : Index of frame wish to switch
-	 * 
+	 *
+	 * @param index : Index of frame wish to switch
 	 */
 	public static boolean switchToFrameByIndex(int index) throws Throwable {
 		boolean flag = false;
@@ -1815,10 +1664,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method switch the to frame using frame ID.
-	 * 
-	 * @param idValue
-	 *            : Frame ID wish to switch
-	 * 
+	 *
+	 * @param idValue : Frame ID wish to switch
 	 */
 	public static boolean switchToFrameById(String idValue) throws Throwable {
 		boolean flag = false;
@@ -1843,10 +1690,8 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method switch the to frame using frame Name.
-	 * 
-	 * @param nameValue
-	 *            : Frame Name wish to switch
-	 * 
+	 *
+	 * @param nameValue : Frame Name wish to switch
 	 */
 	public static boolean switchToFrameByName(String nameValue)
 			throws Throwable {
@@ -1871,7 +1716,7 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method switch the to Default Frame.
-	 * 
+	 *
 	 * @throws Throwable
 	 */
 	public static boolean switchToDefaultFrame() throws Throwable {
@@ -1896,15 +1741,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method switch the to frame using frame Name.
-	 * 
-	 * @param nameValue
-	 *            : Frame Name wish to switch
-	 * 
-	 * @param locatorName
-	 *            : Meaningful name to the element (Ex:SignIn Link, login button
-	 *            etc..)
-	 * 
-	 * 
+	 *
+	 * @param :           Frame Name wish to switch
+	 * @param locatorName : Meaningful name to the element (Ex:SignIn Link, login button
+	 *                    etc..)
 	 */
 	public static boolean switchToFrameByLocator(By lacator, String locatorName)
 			throws Throwable {
@@ -1929,21 +1769,21 @@ public class ActionEngine extends TestEngine {
 	}
 
 	public static ExpectedCondition<Boolean> docReadyState = new ExpectedCondition<Boolean>() {
-			        @Override
-					public Boolean apply(WebDriver driver) {
-			          return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
-			        }
-			      };
-	
+		@Override
+		public Boolean apply(WebDriver driver) {
+			return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+		}
+	};
+
 	/**
 	 * This method wait selenium until element present on web page.
 	 */
 	public static void ImplicitWait() {
 
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		 wait = new WebDriverWait(driver,240);
-		 wait.until(docReadyState);
-		 try {
+		wait = new WebDriverWait(driver, 240);
+		wait.until(docReadyState);
+		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -1951,59 +1791,56 @@ public class ActionEngine extends TestEngine {
 		}
 	}
 
-	public static boolean waitUntilTextPresents(By by, String 
+	public static boolean waitUntilTextPresents(By by, String
 			expectedText, String locator) throws Throwable {
 		wait = new WebDriverWait(driver, 160);
 		boolean flag = false;
-		
-		try {
-				wait.until(ExpectedConditions.textToBePresentInElementLocated(by,
-					expectedText));
-			
-					flag = true;
-					return  true;
 
-			} catch (Exception e) {
-			Assert.assertTrue(false," Falied to locate element " + locator
-					+ " with text " +expectedText);
+		try {
+			wait.until(ExpectedConditions.textToBePresentInElementLocated(by,
+					expectedText));
+
+			flag = true;
+			return true;
+
+		} catch (Exception e) {
+			Assert.assertTrue(false, " Falied to locate element " + locator
+					+ " with text " + expectedText);
 			e.printStackTrace();
 			return false;
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("WaitUntilTextPresent ",
 						" Falied to locate element " + locator
-						+ " with text " +expectedText);
+								+ " with text " + expectedText);
 			} else if (b && flag) {
 				Reporter.SuccessReport(" WaitUntilTextPresent ",
-						" Successfully located element " + locator+
-						" with text " +expectedText);
+						" Successfully located element " + locator +
+								" with text " + expectedText);
 			}
-			
+
 		}
 
 	}
 
 	/**
 	 * Click on Element
-	 * 
+	 *
 	 * @param locator
 	 *            : Action to be performed on element (Get it from Object
 	 *            repository)
-	 * 
+	 *
 	 * @param locatorName
 	 *            : Meaningful name to the element (Ex:SignIn Link, login button
 	 *            etc..)
-	 * 
+	 *
 	 * @throws StaleElementReferenceException
 	 *             - If the element no longer exists as initially defined
 	 */
 
-	
 
 	/**
-	 * 
 	 * This method wait driver until given driver time.
-	 * 
 	 */
 	public static WebDriverWait driverwait() {
 
@@ -2013,12 +1850,10 @@ public class ActionEngine extends TestEngine {
 
 	/**
 	 * This method wait selenium until visibility of Elements on WebPage.
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
+	 *
+	 * @param by : Action to be performed on element (Get it from Object
+	 *           repository)
 	 * @throws Throwable
-	 * 
 	 */
 
 	public static boolean waitForVisibilityOfElement(By by, String locator)
@@ -2030,7 +1865,7 @@ public class ActionEngine extends TestEngine {
 			flag = true;
 			return true;
 		} catch (Exception e) {
-			Assert.assertTrue(flag," Element "
+			Assert.assertTrue(flag, " Element "
 					+ locator + " is not visible");
 			return false;
 		} finally {
@@ -2043,49 +1878,44 @@ public class ActionEngine extends TestEngine {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method wait driver until Invisibility of Element's attribute on WebPage.
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
+	 *
+	 * @param by : Action to be performed on element (Get it from Object
+	 *           repository)
 	 */
-	public static boolean waitUntilElementAttributeIsVisible(By by, String attributeName,String locator)
+	public static boolean waitUntilElementAttributeIsVisible(By by, String attributeName, String locator)
 			throws Throwable {
 		boolean flag = false;
 		try {
-			for(int i = 0; i < 200; i++){
-			    WebElement element = driver.findElement(by);
-			    boolean visible = element.getAttribute(attributeName).length()>0;
-			    if(visible){ 
-			    	flag = true;
-			    	break; 
-			    }else {
+			for (int i = 0; i < 200; i++) {
+				WebElement element = driver.findElement(by);
+				boolean visible = element.getAttribute(attributeName).length() > 0;
+				if (visible) {
+					flag = true;
+					break;
+				} else {
 					driver.wait(50);
 				}
-			 }
+			}
 			flag = true;
 			return flag;
 		} catch (Exception e) {
 			/*Assert.assertTrue(flag," "+locator +" Element's "
 					+ attributeName + " is not visible");*/
 			return false;
-		} 
+		}
 	}
-	
-	
+
+
 	/**
 	 * This method wait driver until Invisibility of Elements on WebPage.
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
-	 * @param by
-	 *            : Action to be performed on element (Get it from Object
-	 *            repository)
-	 * 
+	 *
+	 * @param by : Action to be performed on element (Get it from Object
+	 *           repository)
+	 * @param by : Action to be performed on element (Get it from Object
+	 *           repository)
 	 */
 	public static boolean waitForInVisibilityOfElement(By by, String locator)
 			throws Throwable {
@@ -2108,86 +1938,86 @@ public class ActionEngine extends TestEngine {
 		}
 
 	}
-	
-	public static boolean waitUntilElementAttributeChanges(final By by, final String attributeName, final String 
+
+	public static boolean waitUntilElementAttributeChanges(final By by, final String attributeName, final String
 			expectedAttrubuteValue, String locator) throws Throwable {
-				boolean flag = false;
+		boolean flag = false;
 		try {
-			
+
 			wait = new WebDriverWait(driver, 180);
 			flag = wait.until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver arg0) {
-					return  driver.findElement(by).getAttribute(attributeName).
+					return driver.findElement(by).getAttribute(attributeName).
 							contains(expectedAttrubuteValue);
 				}
 			});
-			 return flag;	
+			return flag;
 
-			} catch (Exception e) {
-			Assert.assertTrue(flag," Falied to locate element "+locator+
-					" 's "+attributeName+" attribute with value " + expectedAttrubuteValue);
+		} catch (Exception e) {
+			Assert.assertTrue(flag, " Falied to locate element " + locator +
+					" 's " + attributeName + " attribute with value " + expectedAttrubuteValue);
 			e.printStackTrace();
 			return false;
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("waitUntilElementAttributeChanges ",
-						 "Falied to locate element "+locator+
-							"  "+attributeName+" attribute with value " + expectedAttrubuteValue);
+						"Falied to locate element " + locator +
+								"  " + attributeName + " attribute with value " + expectedAttrubuteValue);
 			} else if (b && flag) {
 				Reporter.SuccessReport("waitUntilElementAttributeChanges ",
-						" Successfully located element "+locator+
-					" "+attributeName+" attribute with value " + expectedAttrubuteValue);
+						" Successfully located element " + locator +
+								" " + attributeName + " attribute with value " + expectedAttrubuteValue);
 			}
-			
+
 		}
 
 	}
 
-	public static boolean waitForTextOnElementIsPresent(By by,String expectedText ,String locator)
+	public static boolean waitForTextOnElementIsPresent(By by, String expectedText, String locator)
 			throws Throwable {
 		boolean flag = false;
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		try {
-			wait.until(ExpectedConditions.textToBePresentInElement(by,expectedText));
+			wait.until(ExpectedConditions.textToBePresentInElement((WebElement) by, expectedText));
 			flag = true;
 		} catch (Exception e) {
 			return false;
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("waitForTextOnElementIsPresent ",
-						" Unabel to find the text "+ expectedText + " on Element "+locator + " is  visible");
+						" Unabel to find the text " + expectedText + " on Element " + locator + " is  visible");
 			} else if (b && flag) {
 				Reporter.SuccessReport("waitForTextOnElementIsPresent ",
-						"Successfully found the text "+ expectedText + " on Element  " + locator + " is not visible");
+						"Successfully found the text " + expectedText + " on Element  " + locator + " is not visible");
 			}
 		}
 		return flag;
 	}
-	
-	
+
+
 	public static boolean waitForAllSuchElementsPresent(By by, String locator)
 			throws Throwable {
 		boolean flag = false;
 		try {
-				wait = new WebDriverWait(driver, 180);
-				List<WebElement>  element =  null;
-				for(int i = 0; i < 300; i++){
-					element = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
-				    boolean enabled = element.size()>0;
-				    if(enabled){ 
-				    	flag = true;
-				    	break; 
-				    }else {
-				    	driver.wait(50);
-					}
-				 }
+			wait = new WebDriverWait(driver, 180);
+			List<WebElement> element = null;
+			for (int i = 0; i < 300; i++) {
+				element = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+				boolean enabled = element.size() > 0;
+				if (enabled) {
+					flag = true;
+					break;
+				} else {
+					driver.wait(50);
+				}
+			}
 		} catch (Exception e) {
-			
-			Assert.assertTrue(flag,"waitForAllSuchElementsPresent : Falied to locate elements "+locator);
+
+			Assert.assertTrue(flag, "waitForAllSuchElementsPresent : Falied to locate elements " + locator);
 
 			e.printStackTrace();
-			
+
 			return false;
 		} finally {
 			if (!flag) {
@@ -2202,65 +2032,65 @@ public class ActionEngine extends TestEngine {
 		return flag;
 
 	}
-	
+
 	public static List<WebElement> getElements(By locator) throws Throwable {
 		boolean flag = false;
 		List<WebElement> ele = null;
 		try {
-			
-		ele = driver.findElements(locator);
 
-		if (ele.size()>0) {
-			flag = true;
-		} else {
-			flag = false;
-		}
+			ele = driver.findElements(locator);
+
+			if (ele.size() > 0) {
+				flag = true;
+			} else {
+				flag = false;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.assertTrue(flag,
-					"Failed to fetch any elements with locator \""+locator+"\"");
+					"Failed to fetch any elements with locator \"" + locator + "\"");
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("Verify getElements",
-						 "Unable to fetch any elements with locator \""+locator+"\"");
+						"Unable to fetch any elements with locator \"" + locator + "\"");
 			} else if (flag) {
-				Reporter.SuccessReport("Verify getElements" ,
-						"successfully found "+ele.size()+" elements with locator \""+locator+"\"");
+				Reporter.SuccessReport("Verify getElements",
+						"successfully found " + ele.size() + " elements with locator \"" + locator + "\"");
 			}
 		}
 		return ele;
 	}
-	
-	public static List<WebElement> getElementsByIosUIAutomation(String locator,String locatorName) throws Throwable {
+
+	public static List<WebElement> getElementsByIosUIAutomation(String locator, String locatorName) throws Throwable {
 		boolean flag = false;
 		List<WebElement> elements = null;
 		try {
-			
-			elements = ((IOSDriver)driver).findElementsByIosUIAutomation(locator);
 
-		if (elements.size()>0) {
-			flag = true;
-		} else {
-			flag = false;
-		}
+			elements = ((IOSDriver) driver).findElementsByIosUIAutomation(locator);
+
+			if (elements.size() > 0) {
+				flag = true;
+			} else {
+				flag = false;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.assertTrue(flag,
-					"Failed to fetch any elements with locator \""+locator+"\"");
+					"Failed to fetch any elements with locator \"" + locator + "\"");
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("Verify getElements",
-						 "Unable to fetch any elements with locator \""+locator+"\"");
+						"Unable to fetch any elements with locator \"" + locator + "\"");
 			} else if (flag) {
-				Reporter.SuccessReport("Verify getElements" ,
-						"successfully found "+elements.size()+" elements with locator \""+locatorName+"\"");
+				Reporter.SuccessReport("Verify getElements",
+						"successfully found " + elements.size() + " elements with locator \"" + locatorName + "\"");
 			}
 		}
 		return elements;
 	}
-	
+
 	public static boolean assertTextMatching(By by, String text,
-			String locatorName) throws Throwable {
+											 String locatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			String ActualText = getText(by, text).trim();
@@ -2287,45 +2117,45 @@ public class ActionEngine extends TestEngine {
 		}
 
 	}
-	
-	public boolean isElementNotDisplayed(By loc, String LocatorName) throws Throwable{
+
+	public boolean isElementNotDisplayed(By loc, String LocatorName) throws Throwable {
 		boolean flag = false;
 		try {
 			if (driver.findElements(loc).size() == 0)
-	            flag = true;
-	        else
-	            flag = false;
+				flag = true;
+			else
+				flag = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			flag = false;
 		}
-		if(flag){
-			Reporter.SuccessReport("Verify web element is not display", LocatorName+" is not displaying");
-		}else Reporter.failureReport("Verify web element is not display", LocatorName+" is displaying");
-		
+		if (flag) {
+			Reporter.SuccessReport("Verify web element is not display", LocatorName + " is not displaying");
+		} else Reporter.failureReport("Verify web element is not display", LocatorName + " is displaying");
+
 		return flag;
 	}
 
-	public static boolean isElementDisplayed(By loc, String LocatorName)
+	public static boolean isElementDisplayed(By loc, String LocatorName, int wait)
 			throws Throwable {
 		boolean flag = false;
 		try {
-			WebDriverWait newWait = new WebDriverWait(driver,40);
+			WebDriverWait newWait = new WebDriverWait(driver, wait);
 			WebElement element = null;
-			element  = newWait.until(ExpectedConditions.presenceOfElementLocated(loc));
+			element = newWait.until(ExpectedConditions.presenceOfElementLocated(loc));
 			flag = element.isDisplayed();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		if(flag){
-			Reporter.SuccessReport("Verify web element is display", LocatorName+" is displaying");
-			logger.info(LocatorName+" is displaying");
-		}else{
-			Reporter.failureReport("Verify web element is display", LocatorName+" is not displaying");
-			logger.info(LocatorName+" is Not displaying");
+		if (flag) {
+			Reporter.SuccessReport("Verify web element is display", LocatorName + " is displaying");
+			logger.info(LocatorName + " is displaying");
+		} else {
+			Reporter.failureReport("Verify web element is display", LocatorName + " is not displaying");
+			logger.info(LocatorName + " is Not displaying");
 		}
-		
+
 		return flag;
 	}
 
@@ -2334,16 +2164,16 @@ public class ActionEngine extends TestEngine {
 		boolean flag = false;
 		try {
 			driver.manage().timeouts().implicitlyWait(50, TimeUnit.MILLISECONDS);
-			 flag  = driver.findElement((loc)).isDisplayed();
-			 if(flag){
-				 System.out.println("found the element "+loc);
-			 }
+			flag = driver.findElement((loc)).isDisplayed();
+			if (flag) {
+				System.out.println("found the element " + loc);
+			}
 		} catch (Exception e) {
 			return false;
 		}
 		return flag;
 	}
-	
+
 	public static boolean isElementPresent(By loc)
 			throws Throwable {
 		boolean flag = false;
@@ -2361,6 +2191,7 @@ public class ActionEngine extends TestEngine {
 		}
 		return flag;
 	}
+
 	public static void executeJavaScriptOnElement(String script) {
 		((JavascriptExecutor) driver).executeScript(script);
 	}
@@ -2412,7 +2243,7 @@ public class ActionEngine extends TestEngine {
 		}
 		return elements;
 	}
-	
+
 
 	public static void mouseOverElement(WebElement element, String locatorName)
 			throws Throwable {
@@ -2429,12 +2260,12 @@ public class ActionEngine extends TestEngine {
 				// throw new ElementNotFoundException("", "", "");
 
 			} else {
-				 Reporter.SuccessReport("MouseOver ",
-				 " MouserOver Action is Done on " + locatorName);
+				Reporter.SuccessReport("MouseOver ",
+						" MouserOver Action is Done on " + locatorName);
 			}
 		}
 	}
-	
+
 	public static boolean refreshPage() throws Throwable {
 		boolean flag = false;
 		try {
@@ -2445,28 +2276,29 @@ public class ActionEngine extends TestEngine {
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("RefreshPage ",
-						" Failed to Refresh the page " );
-		} else {
-				 Reporter.SuccessReport("RefreshPage ",
-				 " Refreshed page successfully " );
+						" Failed to Refresh the page ");
+			} else {
+				Reporter.SuccessReport("RefreshPage ",
+						" Refreshed page successfully ");
 			}
 		}
 		return flag;
 	}
-	
-	private static CookieStore seleniumCookiesToCookieStore() {
-	    Cookie seleniumCookies = driver.manage().getCookieNamed(".QFXAUTH");	    
-	    CookieStore cookieStore = new BasicCookieStore();
-	    	System.out.println("Selenium Cookie name = "+seleniumCookies.getName());
-	        BasicClientCookie basicClientCookie =
-	            new BasicClientCookie(seleniumCookies.getName(), seleniumCookies.getValue());
-	        basicClientCookie.setDomain(seleniumCookies.getDomain());
-	        basicClientCookie.setExpiryDate(seleniumCookies.getExpiry());
-	        basicClientCookie.setPath(seleniumCookies.getPath());
-	        cookieStore.addCookie(basicClientCookie);	 
-	    return cookieStore;
-	}
-	public static boolean isLinkSuccess(String URLName) throws Throwable {
+
+	/*private static CookieStore seleniumCookiesToCookieStore() {
+		Cookie seleniumCookies = driver.manage().getCookieNamed(".QFXAUTH");
+		CookieStore cookieStore = new BasicCookieStore();
+		System.out.println("Selenium Cookie name = " + seleniumCookies.getName());
+		BasicClientCookie basicClientCookie =
+				new BasicClientCookie(seleniumCookies.getName(), seleniumCookies.getValue());
+		basicClientCookie.setDomain(seleniumCookies.getDomain());
+		basicClientCookie.setExpiryDate(seleniumCookies.getExpiry());
+		basicClientCookie.setPath(seleniumCookies.getPath());
+		cookieStore.addCookie(basicClientCookie);
+		return cookieStore;
+	}*/
+
+	/*public static boolean isLinkSuccess(String URLName) throws Throwable {
 		boolean flag = false;
 		System.out.println(URLName);
 		int respCode = 0;
@@ -2475,15 +2307,15 @@ public class ActionEngine extends TestEngine {
 				@SuppressWarnings("resource")
 				DefaultHttpClient httpClient = new DefaultHttpClient();
 				HttpParams params = new BasicHttpParams();
-				params.setParameter("http.protocol.handle-redirects",true);
+				params.setParameter("http.protocol.handle-redirects", true);
 				CookieStore cookieStore = seleniumCookiesToCookieStore();
-				((AbstractHttpClient) httpClient).setParams(params);								
+				((AbstractHttpClient) httpClient).setParams(params);
 				((AbstractHttpClient) httpClient).setCookieStore(cookieStore);
 				HttpGet httpget = new HttpGet(URLName);
-				HttpResponse httpResp =  httpClient.execute(httpget);
+				HttpResponse httpResp = httpClient.execute(httpget);
 				respCode = httpResp.getStatusLine().getStatusCode();
-				System.out.println("response  "+respCode);
-				if ((respCode==200)|(respCode==302)) {
+				System.out.println("response  " + respCode);
+				if ((respCode == 200) | (respCode == 302)) {
 					flag = true;
 				} else {
 					flag = false;
@@ -2491,41 +2323,41 @@ public class ActionEngine extends TestEngine {
 			} else {
 				flag = false;
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("IsLinkSuccess ",
 						" Failed to veirfy if Link " + URLName
 								+ " response code " + respCode);
-			} else { 
+			} else {
 				Reporter.SuccessReport("IsLinkSuccess ",
 						"Successfully veirfied Link " + URLName
 								+ " response code " + respCode);
 			}
 		}
 		return flag;
-	}
-	
-	
-	public static boolean isLinkSuccessWithOutAuth(String URLName) throws Throwable {
+	}*/
+
+
+	/*public static boolean isLinkSuccessWithOutAuth(String URLName) throws Throwable {
 		boolean flag = false;
 		System.out.println(URLName);
 		int respCode = 0;
 		try {
 			if (URLName.contains("http")) {
-				
+
 				@SuppressWarnings("resource")
 				DefaultHttpClient httpClient = new DefaultHttpClient();
 				HttpParams params = new BasicHttpParams();
-				params.setParameter("http.protocol.handle-redirects",true);
+				params.setParameter("http.protocol.handle-redirects", true);
 				((AbstractHttpClient) httpClient).setParams(params);
 				HttpGet httpget = new HttpGet(URLName);
-				HttpResponse httpResp =  httpClient.execute(httpget);
+				HttpResponse httpResp = httpClient.execute(httpget);
 				respCode = httpResp.getStatusLine().getStatusCode();
-				System.out.println("response  "+respCode);
-				
-				if ((respCode==200)|(respCode==302)) {
+				System.out.println("response  " + respCode);
+
+				if ((respCode == 200) | (respCode == 302)) {
 					flag = true;
 				} else {
 					flag = false;
@@ -2533,126 +2365,177 @@ public class ActionEngine extends TestEngine {
 			} else {
 				flag = false;
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (!flag) {
 				Reporter.failureReport("IsLinkSuccess ",
 						" Failed to veirfy if Link " + URLName
 								+ " response code " + respCode);
-			} else { 
+			} else {
 				Reporter.SuccessReport("IsLinkSuccess ",
 						"Successfully veirfied Link " + URLName
 								+ " response code " + respCode);
 			}
 		}
 		return flag;
-	}
-	public static String parseCookie(String raw) {
-	    String c = raw;
+	}*/
 
-	    if (raw != null) {
-	      int endIndex = raw.indexOf(";");
-	      if (endIndex >= 0) {
-	        c = raw.substring(0, endIndex);
-	      }
-	    }
-	    return c;
-	  }
-	
-	public void tapAction(By locator){
+	public static String parseCookie(String raw) {
+		String c = raw;
+
+		if (raw != null) {
+			int endIndex = raw.indexOf(";");
+			if (endIndex >= 0) {
+				c = raw.substring(0, endIndex);
+			}
+		}
+		return c;
+	}
+
+	public void tapAction(By locator) {
 		TouchActions act = new TouchActions(driver);
 		act.singleTap((WebElement) locator);
-		
+
 	}
-	public static void tapOn(String loginLogo) throws Throwable{
-        MobileElement swt = (MobileElement) driver.findElementById("fragmentTitle");
-        new TouchAction((MobileDriver) driver).tap(swt).tap(swt).tap(swt).tap(swt).tap(swt).perform();
-       
-        MobileElement swt1 = (MobileElement) driver.findElementById("fragmentTitle");
-        new TouchAction((MobileDriver) driver).press(swt1).press(swt1).press(swt1).press(swt1).press(swt1).tap(swt1).perform();
-        
-        
-        WebElement el = driver.findElement(By.xpath("//*[@text='Login'][@resource-id='tv.hooq.androidbetaapp:id/fragmentTitle']"));
-        Point p = ((Locatable) el).getCoordinates().onPage();
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-        
-        
-       /* if(!isElementPresent(LoginPageLocators.Region)){
+
+	/*public static void tapOn(String loginLogo) throws Throwable {
+		MobileElement swt = (MobileElement) driver.findElementById("fragmentTitle");
+		new TouchAction((MobileDriver) driver).tap(swt).tap(swt).tap(swt).tap(swt).tap(swt).perform();
+
+		MobileElement swt1 = (MobileElement) driver.findElementById("fragmentTitle");
+		new TouchAction((MobileDriver) driver).press(swt1).press(swt1).press(swt1).press(swt1).press(swt1).tap(swt1).perform();
+
+
+		WebElement el = driver.findElement(By.xpath("//*[@text='Login'][@resource-id='tv.hooq.androidbetaapp:id/fragmentTitle']"));
+		Point p = ((Locatable) el).getCoordinates().onPage();
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+
+       *//* if(!isElementPresent(LoginPageLocators.Region)){
         	 ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
         }
-        System.out.println("tap on successful");*/
-    }
-	
-	public static void seekTo(){
+        System.out.println("tap on successful");*//*
+	}*/
+
+	public static void seekTo() {
 		 /*MobileElement element = (MobileElement) driver.findElement(By.xpath("//[@resource-id='tv.hooq.androidbetaapp:id/seekBar'][@bounds='[0,2303][1440,2399]']"));
         new TouchAction((MobileDriver) driver).moveTo(element).perform();*/
-		
-		 WebElement el = driver.findElement(By.xpath("//*[@resource-id='tv.hooq.androidbetaapp:id/seekBar']"));
-	        Point p = ((Locatable) el).getCoordinates().onPage();
-	        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-	        
-	        ((TouchShortcuts) driver).tap(1,p.getX(),p.getY(),1);
-	        
-	        
-	 
-		
-    }
-	
-	public void SeekBarTest(){
-		WebElement slider=driver.findElement(By.xpath("//*[@resource-id='tv.hooq.androidbetaapp:id/seekBar']"));
+
+		WebElement el = driver.findElement(By.xpath("//*[@resource-id='tv.hooq.androidbetaapp:id/seekBar']"));
+		Point p = ((Locatable) el).getCoordinates().onPage();
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+		((TouchShortcuts) driver).tap(1, p.getX(), p.getY(), 1);
+
+
+	}
+
+	public void SeekBarTest() {
+		WebElement slider = driver.findElement(By.xpath("//*[@resource-id='tv.hooq.androidbetaapp:id/seekBar']"));
 		int xAxisStartPoint = slider.getLocation().getX();
-		int xAxisStartPoint1 = xAxisStartPoint+30;
+		int xAxisStartPoint1 = xAxisStartPoint + 30;
 		int xAxisEndPoint = xAxisStartPoint + slider.getSize().getWidth();
 		int yAxis = slider.getLocation().getY();
-		TouchAction act=new TouchAction((MobileDriver) driver);
+		TouchAction act = new TouchAction((MobileDriver) driver);
 		//pressed x axis & y axis of seekbar and move seekbar till the end
-		System.out.println("X:"+xAxisStartPoint);
-		System.out.println("Y:"+yAxis);
-		System.out.println("X End Point:"+xAxisEndPoint);
-		
-		act.press(xAxisStartPoint1,yAxis).moveTo(xAxisEndPoint-1,yAxis).release().perform();
-		}
-	
-	public static void main(String args[]){
+		System.out.println("X:" + xAxisStartPoint);
+		System.out.println("Y:" + yAxis);
+		System.out.println("X End Point:" + xAxisEndPoint);
+
+		act.press(xAxisStartPoint1, yAxis).moveTo(xAxisEndPoint - 1, yAxis).release().perform();
+	}
+
+	public static void main(String args[]) {
 		isScroolPresent();
 	}
-	
-	public static void explicityWait(By Locator, String locatorName) throws InterruptedException{
+
+	public static void explicityWait(By Locator, String locatorName) throws InterruptedException {
 		//waitForever(Locator);
 		WebDriverWait wdw = new WebDriverWait(driver, 180);
 		WebElement ele = null;
 		//check if web ELement is click able
-		ele = wdw.until(ExpectedConditions.elementToBeClickable(Locator));		
+		ele = wdw.until(ExpectedConditions.elementToBeClickable(Locator));
 	}
-	
-	public static void waitForever(By loc) throws InterruptedException{
+
+	public static void waitForever(By loc) throws InterruptedException {
 		WebElement ele = driver.findElement(loc);
-		int i=0;
-		for(i=0;i<=29;i++){
-			if(ele.isDisplayed()) break;
+		int i = 0;
+		for (i = 0; i <= 29; i++) {
+			if (ele.isDisplayed()) break;
 			else Thread.sleep(1000);
 		}
-		for(i=0;i<=29;i++){
-			if(ele.isEnabled()) break;
+		for (i = 0; i <= 29; i++) {
+			if (ele.isEnabled()) break;
 			else Thread.sleep(1000);
-		}		
+		}
 	}
+
+
+	public boolean waitForElement(By locator, String locatorName, long duration) throws Throwable {
+		boolean flag = false;
+		try {
+			WebDriverWait newWait = new WebDriverWait(driver, duration);
+			WebElement element = null;
+			element = newWait.until(ExpectedConditions.presenceOfElementLocated(locator));
+			flag = element.isDisplayed();
+		} catch (Exception var5) {
+			System.out.println("Unable to find the element ");
+			throw new org.openqa.selenium.NoSuchElementException("Element '" + locator + "' is not present after " + duration + " attempts ");
+		}
+
+		if (flag) {
+			Reporter.SuccessReport("Verify Element is display", locatorName + " is displaying");
+			logger.info(locatorName + " is displaying");
+		} else {
+			Reporter.failureReport("Verify Element is display", locatorName + " is not displaying");
+			logger.info(locatorName + " is Not displaying");
+		}
+		return flag;
+	}
+
+   /* public void scrollDownTillElementPresent(By locator,String description, int noOfScrools) throws Throwable {
+        for(int i = 0; i < noOfScrools && !this.isElementDisplayed(locator, description,noOfScrools); ++i) {
+            this.verticalSwipeByPercentage(50.0D, 50.0D, 30.0D);
+        }
+
+    }
+
+    public void scrollDownAndClickIfElementPresent(By locator,String description, int noOfScrools) throws Throwable {
+        for(int i = 0; i < noOfScrools; ++i) {
+            if (this.isElementDisplayed(locator, description,noOfScrools)) {
+                this.click(locator,description);
+                break;
+            }
+
+            this.verticalSwipeByPercentage(50.0D, 85.0D, 30.0D);
+        }
+
+    }
+
+
+    public void verticalSwipeByPercentage(double anchorPercentage, double startPercentage, double endPercentage) {
+       org.openqa.selenium.Dimension size = driver.manage().window().getSize();
+        int anchor = size.width / 2;
+        int startPoint = (int)((double)size.height * startPercentage) / 100;
+        int endPoint = (int)((double)size.height * endPercentage) / 100;
+        (new TouchAction(driver)).press(PointOption.point(anchor, startPoint)).waitAction(WaitOptions.waitOptions(Duration.ofSeconds(2L))).moveTo(PointOption.point(anchor, endPoint)).release().perform();
+    }*/
 }
 
 
