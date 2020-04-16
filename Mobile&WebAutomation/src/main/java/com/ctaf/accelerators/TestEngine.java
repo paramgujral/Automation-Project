@@ -23,11 +23,6 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.ITestContext;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 
 import com.ctaf.support.ConfiguratorSupport;
 import com.ctaf.support.HtmlReportSupport;
@@ -38,6 +33,8 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.testng.ITestContext;
+import org.testng.annotations.*;
 
 
 public class TestEngine extends HtmlReportSupport {
@@ -49,7 +46,7 @@ public class TestEngine extends HtmlReportSupport {
 	public static String timeStamp = ReportStampSupport.timeStamp().replace(" ", "_").replace(":", "_").replace(".", "_");
 	public static boolean flag = false;
 	
-	public static RemoteWebDriver driver=null;
+	public static WebDriver driver;
 	public static int stepNum = 0;
 	public static int PassNum =0;
 	public static int FailNum =0;
@@ -330,7 +327,7 @@ public class TestEngine extends HtmlReportSupport {
 	/**
 	 * Write results to Browser specific path
 	 */
-	// @Parameters({"browserType"})
+	//@Parameters({"browserType"})
 	public static String filePath() {
 		String strDirectoy = "";		
 		if (browser.equalsIgnoreCase("ie")) {
@@ -431,12 +428,9 @@ public class TestEngine extends HtmlReportSupport {
 		String formattedDate = sdf.format(date);
 		ReportStampSupport.calculateTestCaseStartTime();
 			if (browser.equalsIgnoreCase("firefox")) {
-				System.setProperty("webdriver.gecko.driver", "Drivers\\geckodriver.exe");
-				ProfilesIni profile = new ProfilesIni();
-				FirefoxProfile ffprofile = new FirefoxProfile();
-				ffprofile.setEnableNativeEvents(true);
-				webDriver = new FirefoxDriver(ffprofile);
-				
+				System.setProperty("webdriver.gecko.driver", "/Users/archana/Documents/Automation-Project/Mobile&WebAutomation/Drivers/geckodriver");
+				driver = new FirefoxDriver();
+
 			} else if (browser.equalsIgnoreCase("ie")) {
 				File file = new File("Drivers\\IEDriverServer.exe");
 				System.setProperty("webdriver.ie.driver", file.getAbsolutePath());
@@ -445,36 +439,20 @@ public class TestEngine extends HtmlReportSupport {
 				webDriver = new InternetExplorerDriver(caps);
 				i = i + 1;
 				
-				
-//				DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-//				ieCapabilities.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-//				ieCapabilities.setCapability("nativeEvents", false);    
-//				ieCapabilities.setCapability("unexpectedAlertBehaviour", "accept");
-//				ieCapabilities.setCapability("ignoreProtectedModeSettings", true);
-//				ieCapabilities.setCapability("disable-popup-blocking", true);
-//				ieCapabilities.setCapability("enablePersistentHover", true);
-//				ieCapabilities.setCapability("requireWindowFocus", true);
-//				webDriver = new InternetExplorerDriver(ieCapabilities);
-//				i=i+1;
-				
 			} else if (browser.equalsIgnoreCase("chrome")) {
-				System.setProperty("webdriver.chrome.driver",
-						"Drivers\\chromedriver.exe");
-				DesiredCapabilities capabilities = new DesiredCapabilities();
-				ChromeOptions options = new ChromeOptions();
-				options.addArguments("test-type");
-				options.addArguments("--dns-prefetch-disable");
-				options.addArguments("disable-popup-blocking");
-				capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-				webDriver = new ChromeDriver(capabilities);			
+				System.setProperty("webdriver.chrome.driver", "/Users/archana/Documents/Automation-Project/Mobile&WebAutomation/Drivers/chromedriver");
+				ChromeOptions chromeOptions=new ChromeOptions();
+				chromeOptions.setAcceptInsecureCerts(true);
+				driver = (new ChromeDriver(chromeOptions));
 				
 			}else if (browser.equalsIgnoreCase("edge")) {
-				System.setProperty("webdriver.edge.driver", 
-						"C:\\Program Files (x86)\\Microsoft Web Driver\\MicrosoftWebDriver.exe");
+				System.setProperty("webdriver.edge.driver",
+						"/Users/archana/Documents/Automation-Project/Mobile&WebAutomation/Drivers/MicrosoftWebDriver.exe");
 				/*EdgeOptions options = new EdgeOptions();
 				options.setPageLoadStrategy("eager");*/
 				//DesiredCapabilities capabilities = DesiredCapabilities.edge();
-				WebDriver driver  = new EdgeDriver();
+				 driver  = new EdgeDriver();
+
 			}else if(browser.equalsIgnoreCase("iphone")){
 				Iosdriver.resetApp();
 			}else if (browser.equalsIgnoreCase("android")) {
@@ -484,10 +462,10 @@ public class TestEngine extends HtmlReportSupport {
 		if((!(browser.equalsIgnoreCase("Android")))&(!(browser.equalsIgnoreCase("iPhone")))
 				&(!browser.equalsIgnoreCase("AndroidChrome"))&(!browser.equalsIgnoreCase("iPhoneSafari")))
 		{
-			driver = (webDriver);
 			driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(45, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
 			driver.get(url);
+			driver.manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
 		}
 		else
 		{
@@ -532,8 +510,8 @@ public class TestEngine extends HtmlReportSupport {
 				//AndroidDriver2.closeApp();
 				
 			}else{
-				driver.quit();
-				/*driver.close();*/
+				//driver.quit();
+				driver.close();
 			}
 		}
 	}

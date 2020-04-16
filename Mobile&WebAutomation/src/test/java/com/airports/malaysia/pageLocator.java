@@ -4,26 +4,14 @@ import org.openqa.selenium.By;
 
 import com.ctaf.accelerators.ActionEngine;
 
-public class pageLocator extends ActionEngine{
+public class pageLocator {
 	
-	//Mention Mobile or WebApplication Locators here
-	
-	//Login page
-	public static By menu = By.xpath("//a[@aria-label='navigation menu']");
-	
-	
-	
-	//Homepage
-	
-	
-	
-	
-	
-	//Transaction page
-	
-	
-	
-	
-	
+	//Amazon signIN locators
+	public static By signIn = By.xpath("//div[@id='nav-flyout-ya-signin']/a/span[contains(text(),'Sign in')]");
+	public static By email = By.xpath("//input[@id='ap_email']");
+	public static By continueBtn= By.xpath("//input[@id='continue']");
+	public static By password= By.xpath("//input[@id='ap_password']");
+	public static By logIn = By.xpath("//input[@id='signInSubmit']");
+	public static By helloSignIn = By.xpath("//span[contains(text(),'Hello. Sign in')]");
 
 }

@@ -55,7 +55,6 @@ public class HtmlReportSupport {
 
 	}
 
-	
 	@SuppressWarnings("rawtypes")
 	public static void createHtmlSummaryReport() throws Exception {
 		
@@ -658,9 +657,9 @@ public class HtmlReportSupport {
 		}
 
 	}
-	
-	
-	
+
+
+
 	// Create a report file
 	public static void htmlCreateReport() throws Exception {
 	
@@ -673,7 +672,7 @@ public class HtmlReportSupport {
 		
 	
 	}
-	
+
 
 	public static void onSuccess(String strStepName, String strStepDes) {
 
@@ -739,8 +738,8 @@ public class HtmlReportSupport {
 
 
 	/*
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public static void onFailure(String strStepName, String strStepDes, String randomValueForScreeShot) {
 		Writer writer = null;
